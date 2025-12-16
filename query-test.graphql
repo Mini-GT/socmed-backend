@@ -1,0 +1,24 @@
+# get single user
+query {
+  getUser(getUserInput: { id: "id" }) {
+    message
+    user {
+      id
+      birthdate
+    }
+  }
+}
+
+# create user
+mutation {
+  createUser(
+    createUserInput: {
+      username: "test"
+      email: "test@gmail.com"
+      password: "123456"
+      birthdate: "2000-01-01"
+    }
+  ) {
+    message
+  }
+}
