@@ -2,6 +2,7 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Pool } from 'pg';
 import { CreateUserInput } from './dto/create-user.input';
 import bcrypt from 'bcrypt';
+import { GetUserInput } from './dto/get-user.input';
 
 @Injectable()
 export class UsersService {
@@ -9,6 +10,19 @@ export class UsersService {
 
   async create(createUserInput: CreateUserInput) {
     const { username, email, password, birthdate } = createUserInput;
+
+    const emailQuery = `
+      SELECT email 
+      FROM users
+      WHERE email = $1 
+    `;
+
+    // check if email already exist
+    const { rows } = await this.pool.query(emailQuery, [email]);
+
+    if (rows.length > 0) {
+      return { message: 'Email already exist' };
+    }
 
     const hashed = await bcrypt.hash(password, 10);
 
@@ -32,9 +46,11 @@ export class UsersService {
     return rows;
   }
 
-  async findOneById(id: number) {
+  async findOneById(getUserInput: GetUserInput) {
+    const { id } = getUserInput;
+
     const query = `
-      SELECT id, firstName, lastName, email, created_at as "createdAt"
+      SELECT id, username, email, birthdate, created_at as "createdAt"
       FROM users
       WHERE id = $1
       `;
