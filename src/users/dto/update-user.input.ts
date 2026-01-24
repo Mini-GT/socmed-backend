@@ -1,5 +1,4 @@
-import { InputType, Field, PartialType, ID } from '@nestjs/graphql';
-import { CreateUserInput } from './create-user.input';
+import { InputType, PartialType } from '@nestjs/graphql';
 import { GetUserInput } from './get-user.input';
 
 @InputType()
